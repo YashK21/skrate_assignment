@@ -6,12 +6,13 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase-config";
 import Dashboard from "./Dashboard";
-import {useNavigate}  from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const Login = () => {
-    const [user, setUser] = useState("");
-    const [error, setError] = useState("");
-      const navigate = useNavigate()
-  const onSignInWithGoogle = () => {
+  const [user, setUser] = useState("");
+  const [error, setError] = useState();
+  const navigate = useNavigate();
+  const onSignInWithGoogle = (e) => {
+    e.preventDefault();
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((res) => {
@@ -19,27 +20,17 @@ const Login = () => {
         setUser(res.user.email);
         // console.log()
       })
-      .catch((err) => (setError(err)));
+      .catch((err) => {
+        console.log(err);
+      });
+    //   const errorcode = err.code;
   };
- onAuthStateChanged(auth,(user)=>{
-    user ? navigate("/dashboard") : navigate("/")
- })
+  onAuthStateChanged(auth, (user) => {
+    user ? navigate("/dashboard") : navigate("/");
+  });
   return (
     <div>
       <button onClick={onSignInWithGoogle}>Sign in with google</button>
-      {
-    user ?
-        
-        <div>
-          <h1>{user}</h1>
-          <Dashboard/>
-        </div>
-        
-         :
-         <div>
-            {error}
-            </div>
-        }
     </div>
   );
 };
